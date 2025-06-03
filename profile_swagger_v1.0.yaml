@@ -1,0 +1,1254 @@
+openapi: 3.0.1
+info:
+  title: Profile API
+  description: Collection for testing Profile API endpoints
+  contact: {}
+  version: 1.0.0
+servers:
+- url: http://localhost:2222/
+tags:
+- name: Health
+- name: Auth
+- name: Profile
+- name: Sections
+- name: Subsections
+- name: Admin
+paths:
+  /api/admin/tokens/cleanup:
+    get:
+      tags:
+      - Admin
+      summary: Cleanup Expired Tokens
+      description: Cleanup Expired Tokens
+      operationId: cleanupExpiredTokens
+      responses:
+        "200":
+          description: "Successful operation"
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: "Expired tokens cleaned up successfully"
+                  count:
+                    type: integer
+                    example: 5
+  /api/admin/tokens/revoke-all:
+    post:
+      tags:
+      - Admin
+      summary: Revoke All Tokens
+      description: Revoke All Tokens
+      operationId: revokeAllTokens
+      responses:
+        "200":
+          description: "Successful operation"
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: "All tokens revoked successfully"
+                  count:
+                    type: integer
+                    example: 10
+  /api/admin/tokens/revoke/{userId}:
+    post:
+      tags:
+      - Admin
+      summary: Revoke User Tokens
+      description: Revoke User Tokens
+      operationId: revokeUserTokens
+      parameters:
+      - name: userId
+        in: path
+        required: true
+        schema:
+          type: string
+      responses:
+        "200":
+          description: "Successful operation"
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: "User tokens revoked successfully"
+                  userId:
+                    type: string
+                    example: "123456"
+                  count:
+                    type: integer
+                    example: 3
+  /api/auth/login:
+    post:
+      tags:
+      - Auth
+      summary: Login
+      description: Login
+      operationId: login
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                email:
+                  type: string
+                  example: user@example.com
+                password:
+                  type: string
+                  example: password123
+              required:
+                - email
+                - password
+        required: true
+      responses:
+        "200":
+          description: "Successful login"
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  token:
+                    type: string
+                    example: "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9..."
+                  refreshToken:
+                    type: string
+                    example: "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9..."
+                  user:
+                    type: object
+                    properties:
+                      id:
+                        type: string
+                        example: "123456"
+                      email:
+                        type: string
+                        example: "user@example.com"
+                      firstName:
+                        type: string
+                        example: "John"
+                      lastName:
+                        type: string
+                        example: "Doe"
+        "401":
+          description: "Unauthorized"
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: "Invalid credentials"
+      x-codegen-request-body-name: body
+  /api/auth/logout:
+    post:
+      tags:
+      - Auth
+      summary: Logout
+      description: Logout
+      operationId: logout
+      responses:
+        "200":
+          description: "Successful logout"
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: "Logged out successfully"
+  /api/auth/refresh:
+    post:
+      tags:
+      - Auth
+      summary: Refresh Token
+      description: Refresh Token
+      operationId: refreshToken
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                refreshToken:
+                  type: string
+                  example: "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9..."
+              required:
+                - refreshToken
+        required: true
+      responses:
+        "200":
+          description: "Successful token refresh"
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  token:
+                    type: string
+                    example: "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9..."
+                  refreshToken:
+                    type: string
+                    example: "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9..."
+        "401":
+          description: "Unauthorized"
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: "Invalid refresh token"
+      x-codegen-request-body-name: body
+  /api/auth/register:
+    post:
+      tags:
+      - Auth
+      summary: Register User
+      description: Register User
+      operationId: registerUser
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                email:
+                  type: string
+                  example: user@example.com
+                firstName:
+                  type: string
+                  example: Test
+                lastName:
+                  type: string
+                  example: User
+                password:
+                  type: string
+                  example: password123
+              required:
+                - email
+                - firstName
+                - lastName
+                - password
+        required: true
+      responses:
+        "201":
+          description: "User registered successfully"
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  id:
+                    type: string
+                    example: "123456"
+                  email:
+                    type: string
+                    example: "user@example.com"
+                  firstName:
+                    type: string
+                    example: "Test"
+                  lastName:
+                    type: string
+                    example: "User"
+        "400":
+          description: "Bad request"
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: "Email already exists"
+      x-codegen-request-body-name: body
+  /api/auth/status:
+    get:
+      tags:
+      - Auth
+      summary: Check Auth Status
+      description: Check Auth Status
+      operationId: checkAuthStatus
+      responses:
+        "200":
+          description: "Authenticated"
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  authenticated:
+                    type: boolean
+                    example: true
+                  user:
+                    type: object
+                    properties:
+                      id:
+                        type: string
+                        example: "123456"
+                      email:
+                        type: string
+                        example: "user@example.com"
+                      firstName:
+                        type: string
+                        example: "John"
+                      lastName:
+                        type: string
+                        example: "Doe"
+        "401":
+          description: "Unauthenticated"
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  authenticated:
+                    type: boolean
+                    example: false
+  /api/health/ping:
+    get:
+      tags:
+      - Health
+      summary: Ping
+      description: Ping
+      operationId: ping
+      responses:
+        "200":
+          description: "Successful ping"
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                    example: "ok"
+                  message:
+                    type: string
+                    example: "pong"
+                  timestamp:
+                    type: string
+                    format: date-time
+                    example: "2023-06-03T14:33:50Z"
+  /api/profiles:
+    get:
+      tags:
+      - Profile
+      summary: Get All Profiles
+      description: Get All Profiles
+      operationId: getAllProfiles
+      responses:
+        "200":
+          description: "Successful operation"
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    id:
+                      type: string
+                      example: "123456"
+                    name:
+                      type: string
+                      example: "John Doe"
+                    bio:
+                      type: string
+                      example: "Software Developer"
+                    isPublic:
+                      type: boolean
+                      example: true
+                    createdAt:
+                      type: string
+                      format: date-time
+                      example: "2023-06-03T14:33:50Z"
+                    updatedAt:
+                      type: string
+                      format: date-time
+                      example: "2023-06-03T14:33:50Z"
+    post:
+      tags:
+      - Profile
+      summary: Create Profile
+      description: Create Profile
+      operationId: createProfile
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                bio:
+                  type: string
+                  example: Test Bio
+                isPublic:
+                  type: boolean
+                  example: true
+                name:
+                  type: string
+                  example: Test Profile
+              required:
+                - name
+                - bio
+                - isPublic
+        required: true
+      responses:
+        "201":
+          description: "Profile created successfully"
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  id:
+                    type: string
+                    example: "123456"
+                  name:
+                    type: string
+                    example: "Test Profile"
+                  bio:
+                    type: string
+                    example: "Test Bio"
+                  isPublic:
+                    type: boolean
+                    example: true
+                  createdAt:
+                    type: string
+                    format: date-time
+                    example: "2023-06-03T14:33:50Z"
+                  updatedAt:
+                    type: string
+                    format: date-time
+                    example: "2023-06-03T14:33:50Z"
+        "400":
+          description: "Bad request"
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: "Invalid profile data"
+      x-codegen-request-body-name: body
+  /api/profiles/{profileId}:
+    get:
+      tags:
+      - Profile
+      summary: Get Profile
+      description: Get Profile
+      operationId: getProfile
+      parameters:
+      - name: profileId
+        in: path
+        required: true
+        schema:
+          type: string
+      responses:
+        "200":
+          description: "Successful operation"
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  id:
+                    type: string
+                    example: "123456"
+                  name:
+                    type: string
+                    example: "John Doe"
+                  bio:
+                    type: string
+                    example: "Software Developer"
+                  isPublic:
+                    type: boolean
+                    example: true
+                  createdAt:
+                    type: string
+                    format: date-time
+                    example: "2023-06-03T14:33:50Z"
+                  updatedAt:
+                    type: string
+                    format: date-time
+                    example: "2023-06-03T14:33:50Z"
+        "404":
+          description: "Profile not found"
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: "Profile not found"
+    put:
+      tags:
+      - Profile
+      summary: Update Profile
+      description: Update Profile
+      operationId: updateProfile
+      parameters:
+      - name: profileId
+        in: path
+        required: true
+        schema:
+          type: string
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                bio:
+                  type: string
+                  example: Updated Bio
+                name:
+                  type: string
+                  example: Updated Profile
+                isPublic:
+                  type: boolean
+                  example: true
+              required:
+                - name
+                - bio
+                - isPublic
+        required: true
+      responses:
+        "200":
+          description: "Profile updated successfully"
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  id:
+                    type: string
+                    example: "123456"
+                  name:
+                    type: string
+                    example: "Updated Profile"
+                  bio:
+                    type: string
+                    example: "Updated Bio"
+                  isPublic:
+                    type: boolean
+                    example: true
+                  updatedAt:
+                    type: string
+                    format: date-time
+                    example: "2023-06-03T14:33:50Z"
+        "404":
+          description: "Profile not found"
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: "Profile not found"
+        "400":
+          description: "Bad request"
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: "Invalid profile data"
+      x-codegen-request-body-name: body
+    delete:
+      tags:
+      - Profile
+      summary: Delete Profile
+      description: Delete Profile
+      operationId: deleteProfile
+      parameters:
+      - name: profileId
+        in: path
+        required: true
+        schema:
+          type: string
+      responses:
+        "200":
+          description: "Profile deleted successfully"
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: "Profile deleted successfully"
+                  id:
+                    type: string
+                    example: "123456"
+        "404":
+          description: "Profile not found"
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: "Profile not found"
+  /api/sections:
+    post:
+      tags:
+      - Sections
+      summary: Create Section
+      description: Create Section
+      operationId: createSection
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                profileId:
+                  type: string
+                  example: "123456"
+                title:
+                  type: string
+                  example: "About Me"
+                type:
+                  type: string
+                  example: "ABOUT"
+                order:
+                  type: number
+                  example: 1
+              required:
+                - profileId
+                - title
+                - type
+                - order
+        required: true
+      responses:
+        "201":
+          description: "Section created successfully"
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  id:
+                    type: string
+                    example: "789012"
+                  profileId:
+                    type: string
+                    example: "123456"
+                  title:
+                    type: string
+                    example: "About Me"
+                  type:
+                    type: string
+                    example: "ABOUT"
+                  order:
+                    type: number
+                    example: 1
+                  createdAt:
+                    type: string
+                    format: date-time
+                    example: "2023-06-03T14:33:50Z"
+                  updatedAt:
+                    type: string
+                    format: date-time
+                    example: "2023-06-03T14:33:50Z"
+        "400":
+          description: "Bad request"
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: "Invalid section data"
+      x-codegen-request-body-name: body
+  /api/sections/profile/{profileId}:
+    get:
+      tags:
+      - Sections
+      summary: Get Sections by Profile
+      description: Get Sections by Profile
+      operationId: getSectionsByProfile
+      parameters:
+      - name: profileId
+        in: path
+        required: true
+        schema:
+          type: string
+      responses:
+        "200":
+          description: "Successful operation"
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    id:
+                      type: string
+                      example: "789012"
+                    profileId:
+                      type: string
+                      example: "123456"
+                    title:
+                      type: string
+                      example: "About Me"
+                    type:
+                      type: string
+                      example: "ABOUT"
+                    order:
+                      type: number
+                      example: 1
+                    createdAt:
+                      type: string
+                      format: date-time
+                      example: "2023-06-03T14:33:50Z"
+                    updatedAt:
+                      type: string
+                      format: date-time
+                      example: "2023-06-03T14:33:50Z"
+        "404":
+          description: "Profile not found"
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: "Profile not found"
+  /api/sections/reorder/{profileId}:
+    post:
+      tags:
+      - Sections
+      summary: Reorder Sections
+      description: Reorder Sections
+      operationId: reorderSections
+      parameters:
+      - name: profileId
+        in: path
+        required: true
+        schema:
+          type: string
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: array
+              items:
+                type: object
+                properties:
+                  id:
+                    type: string
+                    example: "789012"
+                  order:
+                    type: number
+                    example: 1
+                required:
+                  - id
+                  - order
+        required: true
+      responses:
+        "200":
+          description: "Sections reordered successfully"
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: "Sections reordered successfully"
+                  sections:
+                    type: array
+                    items:
+                      type: object
+                      properties:
+                        id:
+                          type: string
+                          example: "789012"
+                        order:
+                          type: number
+                          example: 1
+        "400":
+          description: "Bad request"
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: "Invalid reorder data"
+        "404":
+          description: "Profile not found"
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: "Profile not found"
+      x-codegen-request-body-name: body
+  /api/sections/{sectionId}:
+    get:
+      tags:
+      - Sections
+      summary: Get Section
+      description: Get Section
+      operationId: getSection
+      parameters:
+      - name: sectionId
+        in: path
+        required: true
+        schema:
+          type: string
+      responses:
+        "200":
+          description: "Successful operation"
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  id:
+                    type: string
+                    example: "789012"
+                  profileId:
+                    type: string
+                    example: "123456"
+                  title:
+                    type: string
+                    example: "About Me"
+                  type:
+                    type: string
+                    example: "ABOUT"
+                  order:
+                    type: number
+                    example: 1
+                  createdAt:
+                    type: string
+                    format: date-time
+                    example: "2023-06-03T14:33:50Z"
+                  updatedAt:
+                    type: string
+                    format: date-time
+                    example: "2023-06-03T14:33:50Z"
+        "404":
+          description: "Section not found"
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: "Section not found"
+    put:
+      tags:
+      - Sections
+      summary: Update Section
+      description: Update Section
+      operationId: updateSection
+      parameters:
+      - name: sectionId
+        in: path
+        required: true
+        schema:
+          type: string
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                order:
+                  type: number
+                  example: 1
+                title:
+                  type: string
+                  example: "Updated About Me"
+                type:
+                  type: string
+                  example: "ABOUT"
+              required:
+                - order
+                - title
+                - type
+        required: true
+      responses:
+        "200":
+          description: "Section updated successfully"
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  id:
+                    type: string
+                    example: "789012"
+                  profileId:
+                    type: string
+                    example: "123456"
+                  title:
+                    type: string
+                    example: "Updated About Me"
+                  type:
+                    type: string
+                    example: "ABOUT"
+                  order:
+                    type: number
+                    example: 1
+                  updatedAt:
+                    type: string
+                    format: date-time
+                    example: "2023-06-03T14:33:50Z"
+        "400":
+          description: "Bad request"
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: "Invalid section data"
+        "404":
+          description: "Section not found"
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: "Section not found"
+      x-codegen-request-body-name: body
+    delete:
+      tags:
+      - Sections
+      summary: Delete Section
+      description: Delete Section
+      operationId: deleteSection
+      parameters:
+      - name: sectionId
+        in: path
+        required: true
+        schema:
+          type: string
+      responses:
+        "200":
+          description: "Section deleted successfully"
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: "Section deleted successfully"
+                  id:
+                    type: string
+                    example: "789012"
+        "404":
+          description: "Section not found"
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: "Section not found"
+  /api/sections/{sectionId}/subsections:
+    post:
+      tags:
+      - Subsections
+      summary: Create Subsection
+      description: Create Subsection
+      operationId: createSubsection
+      parameters:
+      - name: sectionId
+        in: path
+        required: true
+        schema:
+          type: string
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                content:
+                  type: string
+                  example: "Subsection Content"
+                order:
+                  type: number
+                  example: 1
+                title:
+                  type: string
+                  example: "Subsection Title"
+              required:
+                - content
+                - order
+                - title
+        required: true
+      responses:
+        "201":
+          description: "Subsection created successfully"
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  id:
+                    type: string
+                    example: "345678"
+                  sectionId:
+                    type: string
+                    example: "789012"
+                  title:
+                    type: string
+                    example: "Subsection Title"
+                  content:
+                    type: string
+                    example: "Subsection Content"
+                  order:
+                    type: number
+                    example: 1
+                  createdAt:
+                    type: string
+                    format: date-time
+                    example: "2023-06-03T14:33:50Z"
+                  updatedAt:
+                    type: string
+                    format: date-time
+                    example: "2023-06-03T14:33:50Z"
+        "400":
+          description: "Bad request"
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: "Invalid subsection data"
+        "404":
+          description: "Section not found"
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: "Section not found"
+      x-codegen-request-body-name: body
+  /api/sections/{sectionId}/subsections/{subsectionId}:
+    get:
+      tags:
+      - Subsections
+      summary: Get Subsection
+      description: Get Subsection
+      operationId: getSubsection
+      parameters:
+      - name: sectionId
+        in: path
+        required: true
+        schema:
+          type: string
+      - name: subsectionId
+        in: path
+        required: true
+        schema:
+          type: string
+      responses:
+        "200":
+          description: "Successful operation"
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  id:
+                    type: string
+                    example: "345678"
+                  sectionId:
+                    type: string
+                    example: "789012"
+                  title:
+                    type: string
+                    example: "Subsection Title"
+                  content:
+                    type: string
+                    example: "Subsection Content"
+                  order:
+                    type: number
+                    example: 1
+                  createdAt:
+                    type: string
+                    format: date-time
+                    example: "2023-06-03T14:33:50Z"
+                  updatedAt:
+                    type: string
+                    format: date-time
+                    example: "2023-06-03T14:33:50Z"
+        "404":
+          description: "Subsection not found"
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: "Subsection not found"
+    put:
+      tags:
+      - Subsections
+      summary: Update Subsection
+      description: Update Subsection
+      operationId: updateSubsection
+      parameters:
+      - name: sectionId
+        in: path
+        required: true
+        schema:
+          type: string
+      - name: subsectionId
+        in: path
+        required: true
+        schema:
+          type: string
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                content:
+                  type: string
+                  example: "Updated Subsection Content"
+                order:
+                  type: number
+                  example: 2
+                title:
+                  type: string
+                  example: "Updated Subsection Title"
+              required:
+                - content
+                - order
+                - title
+        required: true
+      responses:
+        "200":
+          description: "Subsection updated successfully"
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  id:
+                    type: string
+                    example: "345678"
+                  sectionId:
+                    type: string
+                    example: "789012"
+                  title:
+                    type: string
+                    example: "Updated Subsection Title"
+                  content:
+                    type: string
+                    example: "Updated Subsection Content"
+                  order:
+                    type: number
+                    example: 2
+                  updatedAt:
+                    type: string
+                    format: date-time
+                    example: "2023-06-03T14:33:50Z"
+        "400":
+          description: "Bad request"
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: "Invalid subsection data"
+        "404":
+          description: "Subsection not found"
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: "Subsection not found"
+      x-codegen-request-body-name: body
+    delete:
+      tags:
+      - Subsections
+      summary: Delete Subsection
+      description: Delete Subsection
+      operationId: deleteSubsection
+      parameters:
+      - name: sectionId
+        in: path
+        required: true
+        schema:
+          type: string
+      - name: subsectionId
+        in: path
+        required: true
+        schema:
+          type: string
+      responses:
+        "200":
+          description: "Subsection deleted successfully"
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: "Subsection deleted successfully"
+                  id:
+                    type: string
+                    example: "345678"
+        "404":
+          description: "Subsection not found"
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: "Subsection not found"
+components: {}
+x-original-swagger-version: "2.0"
