@@ -41,7 +41,7 @@ jobs:
 
       - name: Convert Swagger to Declarative
         run: |
-          deck file openapi2kong --spec kong/specs/profile_swagger_v1.0.yaml --output-file kong/declarative/profilebuilder.yml
+          deck file openapi2kong --spec kong/specs/profile_swagger_v1.0.yaml --output-file ${{ github.workspace }}/profilebuilder.yml
           if [ $? -ne 0 ]; then
             echo "Failed to convert swagger to declarative format"
             exit 1
@@ -49,7 +49,7 @@ jobs:
 
       - name: Deck Diff
         run: |
-          deck diff --state kong/declarative/profilebuilder.yml --kong-addr $KONG_ADMIN_URL
+          deck diff --state ${{ github.workspace }}/profilebuilder.yml --kong-addr $KONG_ADMIN_URL
           if [ $? -ne 0 ]; then
             echo "Deck diff shows conflicts or errors"
             exit 1
@@ -59,7 +59,7 @@ jobs:
         uses: actions/upload-artifact@v4
         with:
           name: kong-config
-          path: kong/declarative/profilebuilder.yml
+          path: ${{ github.workspace }}/profilebuilder.yml
 
   deploy:
     needs: validate-and-prepare
@@ -76,10 +76,10 @@ jobs:
         uses: actions/download-artifact@v4
         with:
           name: kong-config
-          path: kong/declarative
+          path: ${{ github.workspace }}
 
       - name: Display structure of downloaded files
-        run: ls -R kong/declarative
+        run: ls -R ${{ github.workspace }}
 
       - name: Get latest deck version
         run: |
@@ -97,7 +97,7 @@ jobs:
 
       - name: Deploy to Kong
         run: |
-          deck sync --state kong/declarative/profilebuilder.yml --kong-addr $KONG_ADMIN_URL --select-tag profilebuilder
+          deck sync --state ${{ github.workspace }}/profilebuilder.yml --kong-addr $KONG_ADMIN_URL --select-tag profilebuilder
           if [ $? -ne 0 ]; then
             echo "Failed to sync configuration with Kong"
             exit 1
