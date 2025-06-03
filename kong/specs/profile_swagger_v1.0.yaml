@@ -3,7 +3,7 @@ info:
   title: Profile API
   description: Collection for testing Profile API endpoints
   contact: {}
-  version: 1.0.1
+  version: 1.0
 servers:
 - url: http://34.55.116.90:8001
   description: Kong Gateway
