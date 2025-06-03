@@ -40,7 +40,7 @@ paths:
     post:
       tags:
       - Admin
-      summary: Revoke All Token
+      summary: Revoke All Tokens
       description: Revoke All Tokens
       operationId: revokeAllTokens
       responses:
