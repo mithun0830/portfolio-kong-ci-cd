@@ -5,7 +5,7 @@ info:
   contact: {}
   version: 1.0.1
 servers:
-- url: https://portfolio-builder-with-exception-fix-480868035316.asia-south2.run.app
+- url: https://portfolio-builder-480868035316.asia-south1.run.app
   description: Kong Gateway
 tags:
 - name: Health
