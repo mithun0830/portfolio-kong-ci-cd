@@ -5,8 +5,8 @@ info:
   contact: {}
   version: 1.0.1
 servers:
-- url: https://portfolio-builder-with-exception-fix-480868035316.asia-south2.run.app
-  description: Development server
+- url: http://34.55.116.90:8001
+  description: Kong Gateway
 tags:
 - name: Health
 - name: Auth
