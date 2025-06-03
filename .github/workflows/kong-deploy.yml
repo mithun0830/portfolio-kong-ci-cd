@@ -14,7 +14,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout code
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
 
       - name: Install deck
         run: |
@@ -48,7 +48,7 @@ jobs:
           fi
 
       - name: Upload Declarative Config
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v4
         with:
           name: kong-config
           path: kong/declarative/profilebuilder.yml
@@ -62,15 +62,15 @@ jobs:
     
     steps:
       - name: Checkout code
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
 
       - name: Download Declarative Config
-        uses: actions/download-artifact@v3
+        uses: actions/download-artifact@v4
         with:
           name: kong-config
           path: kong/declarative
 
-      - name: List downloaded files
+      - name: Display structure of downloaded files
         run: ls -R kong/declarative
 
       - name: Install deck
