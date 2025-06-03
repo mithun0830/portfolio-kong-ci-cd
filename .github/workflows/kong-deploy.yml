@@ -70,6 +70,9 @@ jobs:
           name: kong-config
           path: kong/declarative
 
+      - name: List downloaded files
+        run: ls -R kong/declarative
+
       - name: Install deck
         run: |
           curl -sL https://github.com/kong/deck/releases/download/v1.16.1/deck_1.16.1_linux_amd64.tar.gz -o deck.tar.gz
