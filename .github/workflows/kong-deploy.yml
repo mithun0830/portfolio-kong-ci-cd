@@ -33,7 +33,7 @@ jobs:
 
       - name: Convert Swagger to Declarative
         run: |
-          deck convert --from kong/specs/profile_swagger_v1.0.yaml --to kong/declarative/profilebuilder.yml
+          deck file openapi2kong --spec kong/specs/profile_swagger_v1.0.yaml --output-file kong/declarative/profilebuilder.yml
           if [ $? -ne 0 ]; then
             echo "Failed to convert swagger to declarative format"
             exit 1

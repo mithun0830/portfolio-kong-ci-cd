@@ -74,7 +74,7 @@ If you need to run deck commands manually:
 
 ```bash
 # Convert swagger to declarative
-deck convert --from kong/specs/profile_swagger_v1.0.yaml --to kong/declarative/profilebuilder.yml
+deck file openapi2kong --spec kong/specs/profile_swagger_v1.0.yaml --output-file kong/declarative/profilebuilder.yml
 
 # Check diff
 deck diff --state kong/declarative/profilebuilder.yml --kong-addr http://34.55.116.90:8001
