@@ -70,9 +70,19 @@ The workflow uses GitHub Actions artifacts to:
 
 ## Manual Steps
 
-If you need to run deck commands manually:
+If you need to run deck commands manually, first ensure you have the latest version of deck installed:
 
 ```bash
+# Get the latest deck version
+LATEST_VERSION=$(curl -s https://api.github.com/repos/kong/deck/releases/latest | jq -r .tag_name)
+DOWNLOAD_URL=$(curl -s https://api.github.com/repos/kong/deck/releases/latest | jq -r '.assets[] | select(.name | contains("linux_amd64")) | .browser_download_url')
+
+# Download and install deck
+curl -sL $DOWNLOAD_URL -o deck.tar.gz
+tar -xf deck.tar.gz
+sudo mv deck /usr/local/bin/
+deck version
+
 # Convert swagger to declarative
 deck file openapi2kong --spec kong/specs/profile_swagger_v1.0.yaml --output-file kong/declarative/profilebuilder.yml
 
@@ -81,3 +91,6 @@ deck diff --state kong/declarative/profilebuilder.yml --kong-addr http://34.55.1
 
 # Deploy
 deck sync --state kong/declarative/profilebuilder.yml --kong-addr http://34.55.116.90:8001 --select-tag profilebuilder
+```
+
+Note: The workflow now automatically uses the latest version of deck for all operations.
