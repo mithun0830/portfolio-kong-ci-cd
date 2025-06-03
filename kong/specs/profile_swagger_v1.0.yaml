@@ -3,7 +3,7 @@ info:
   title: Profile API
   description: Collection for testing Profile API endpoints
   contact: {}
-  version: 1.0.0
+  version: 1.0.1
 servers:
 - url: https://portfolio-builder-with-exception-fix-480868035316.asia-south2.run.app
   description: Development server
