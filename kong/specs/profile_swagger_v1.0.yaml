@@ -5,7 +5,7 @@ info:
   contact: {}
   version: 1.0.1
 servers:
-- url: https://portfolio-builder-480868035316.asia-south1.run.app
+- url: https://portfolio-builder-dev-480868035316.us-central1.run.app
   description: Kong Gateway
 tags:
 - name: Health
@@ -14,6 +14,32 @@ tags:
 - name: Sections
 - name: Subsections
 - name: Admin
+
+x-kong-upstream-defaults:
+  # the defaults for the Kong upstreams (loadbalancers) generated from 'servers' above
+  # see https://docs.konghq.com/1.2.x/admin-api/#upstream-object
+  hash_on: ip
+  healthchecks:
+    passive:
+      unhealthy:
+        http_failures: 3
+        tcp_failures: 3
+        timeouts: 3
+
+x-kong-name: portfolio-builder
+
+x-kong-tags: [ portfolio_builder_dev ]
+
+x-kong-route-defaults:
+  # the defaults for the Kong routes generated from 'paths' below
+  # see https://docs.konghq.com/gateway/latest/admin-api/#route-object
+  preserve_host: true
+  methods: ["OPTIONS"]
+  # NOTE: these defaults can also be added to "path" and "operation" objects as well
+  # to only apply to that subset of the spec.
+  # Fields `regex_priority` and `strip_path` should not be set. If provided they will
+  # be used, but verify the results carefully as setting them can cause unexpected results!
+
 paths:
   /api/admin/tokens/cleanup:
     get:
