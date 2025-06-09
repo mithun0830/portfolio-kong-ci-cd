@@ -54,6 +54,14 @@ jobs:
             echo "Deck diff shows conflicts or errors"
             exit 1
           fi
+      
+      - name: Add Route defaults
+        run: |
+          deck file patch --state ${{ github.workspace }}/profilebuilder.yml --kong-addr $KONG_ADMIN_URL --selector="$..routes[*].methods" --value='["OPTIONS"]'
+          if [ $? -ne 0 ]; then
+            echo "Failed to add route defaults"
+            exit 1
+          fi
 
       - name: Upload Declarative Config
         uses: actions/upload-artifact@v4
