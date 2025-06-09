@@ -34,7 +34,8 @@ x-kong-route-defaults:
   # the defaults for the Kong routes generated from 'paths' below
   # see https://docs.konghq.com/gateway/latest/admin-api/#route-object
   preserve_host: true
-  methods: ["OPTIONS"]
+  methods:
+  - OPTIONS
   # NOTE: these defaults can also be added to "path" and "operation" objects as well
   # to only apply to that subset of the spec.
   # Fields `regex_priority` and `strip_path` should not be set. If provided they will
